@@ -1,0 +1,12 @@
+apache-airflow==2.8.1
+apache-airflow-providers-snowflake==5.1.1
+apache-airflow-providers-common-sql==1.10.0
+dbt-core==1.7.7
+dbt-snowflake==1.7.1
+great-expectations==0.18.8
+snowflake-connector-python==3.6.0
+pandas==2.1.4
+numpy==1.26.3
+python-dotenv==1.0.0
+sqlalchemy==1.4.51
+Faker==22.0.0

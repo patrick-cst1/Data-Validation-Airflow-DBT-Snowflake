@@ -1,0 +1,34 @@
+name: 'ecommerce_dq'
+version: '1.0.0'
+config-version: 2
+
+profile: 'ecommerce_dq'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+  - "logs"
+
+models:
+  ecommerce_dq:
+    staging:
+      +materialized: view
+      +schema: staging
+    mart:
+      +materialized: table
+      +schema: mart
+
+vars:
+  # Data quality thresholds
+  max_null_percentage: 0.05
+  min_completeness_score: 0.95
+  max_duplicate_percentage: 0.01
+  freshness_threshold_hours: 24

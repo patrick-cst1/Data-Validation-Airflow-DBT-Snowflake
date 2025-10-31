@@ -1,0 +1,107 @@
+version: 2
+
+sources:
+  - name: ecommerce
+    database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+    schema: raw
+    tables:
+      - name: customers
+        description: "Raw customer data from source system"
+        columns:
+          - name: customer_id
+            description: "Unique customer identifier"
+            tests:
+              - not_null
+              - unique
+          - name: email
+            description: "Customer email address"
+            tests:
+              - not_null
+      
+      - name: orders
+        description: "Raw order transaction data"
+        columns:
+          - name: order_id
+            description: "Unique order identifier"
+            tests:
+              - not_null
+              - unique
+          - name: customer_id
+            description: "Foreign key to customers"
+            tests:
+              - not_null
+              - relationships:
+                  to: source('ecommerce', 'customers')
+                  field: customer_id
+          - name: total_amount
+            description: "Order total amount"
+            tests:
+              - not_null
+      
+      - name: events
+        description: "Raw user interaction events"
+        columns:
+          - name: event_id
+            description: "Unique event identifier"
+            tests:
+              - not_null
+              - unique
+
+models:
+  - name: stg_customers
+    description: "Staged and cleaned customer data"
+    columns:
+      - name: customer_id
+        description: "Unique customer identifier"
+        tests:
+          - not_null
+          - unique
+      - name: email
+        description: "Normalized email address"
+        tests:
+          - not_null
+      - name: signup_timestamp
+        description: "Customer signup timestamp"
+        tests:
+          - not_null
+  
+  - name: stg_orders
+    description: "Staged and cleaned order data"
+    columns:
+      - name: order_id
+        description: "Unique order identifier"
+        tests:
+          - not_null
+          - unique
+      - name: customer_id
+        description: "Foreign key to customers"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+      - name: total_amount
+        description: "Order total amount"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      - name: order_status
+        description: "Order status"
+        tests:
+          - accepted_values:
+              values: ['PENDING', 'COMPLETED', 'CANCELLED', 'REFUNDED']
+  
+  - name: stg_events
+    description: "Staged and cleaned event data"
+    columns:
+      - name: event_id
+        description: "Unique event identifier"
+        tests:
+          - not_null
+          - unique
+      - name: event_type
+        description: "Type of user event"
+        tests:
+          - accepted_values:
+              values: ['PAGE_VIEW', 'ADD_TO_CART', 'PURCHASE', 'SEARCH', 'CLICK']

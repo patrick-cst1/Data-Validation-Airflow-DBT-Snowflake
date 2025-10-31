@@ -1,0 +1,48 @@
+{
+  "customers": {
+    "table_name": "customers",
+    "description": "Customer master data",
+    "columns": [
+      {"name": "customer_id", "type": "VARCHAR(20)", "nullable": false, "primary_key": true},
+      {"name": "email", "type": "VARCHAR(255)", "nullable": false},
+      {"name": "first_name", "type": "VARCHAR(100)", "nullable": true},
+      {"name": "last_name", "type": "VARCHAR(100)", "nullable": true},
+      {"name": "date_of_birth", "type": "DATE", "nullable": true},
+      {"name": "country", "type": "VARCHAR(2)", "nullable": true},
+      {"name": "city", "type": "VARCHAR(100)", "nullable": true},
+      {"name": "signup_date", "type": "TIMESTAMP", "nullable": false},
+      {"name": "customer_segment", "type": "VARCHAR(20)", "nullable": true},
+      {"name": "_loaded_at", "type": "TIMESTAMP", "nullable": false}
+    ]
+  },
+  "orders": {
+    "table_name": "orders",
+    "description": "Order transaction data",
+    "columns": [
+      {"name": "order_id", "type": "VARCHAR(20)", "nullable": false, "primary_key": true},
+      {"name": "customer_id", "type": "VARCHAR(20)", "nullable": false, "foreign_key": "customers.customer_id"},
+      {"name": "order_date", "type": "TIMESTAMP", "nullable": false},
+      {"name": "order_status", "type": "VARCHAR(20)", "nullable": false},
+      {"name": "total_amount", "type": "DECIMAL(10,2)", "nullable": false},
+      {"name": "payment_method", "type": "VARCHAR(50)", "nullable": true},
+      {"name": "shipping_cost", "type": "DECIMAL(10,2)", "nullable": true},
+      {"name": "discount_amount", "type": "DECIMAL(10,2)", "nullable": true},
+      {"name": "_loaded_at", "type": "TIMESTAMP", "nullable": false}
+    ]
+  },
+  "events": {
+    "table_name": "events",
+    "description": "User interaction events",
+    "columns": [
+      {"name": "event_id", "type": "VARCHAR(20)", "nullable": false, "primary_key": true},
+      {"name": "customer_id", "type": "VARCHAR(20)", "nullable": true, "foreign_key": "customers.customer_id"},
+      {"name": "event_type", "type": "VARCHAR(50)", "nullable": false},
+      {"name": "event_timestamp", "type": "TIMESTAMP", "nullable": false},
+      {"name": "page_url", "type": "VARCHAR(500)", "nullable": true},
+      {"name": "product_id", "type": "VARCHAR(20)", "nullable": true},
+      {"name": "session_id", "type": "VARCHAR(50)", "nullable": true},
+      {"name": "device_type", "type": "VARCHAR(20)", "nullable": true},
+      {"name": "_loaded_at", "type": "TIMESTAMP", "nullable": false}
+    ]
+  }
+}

@@ -1,0 +1,104 @@
+version: 2
+
+models:
+  - name: customer_features
+    description: "Aggregated customer features for ML modeling - includes RFM, behavioral metrics, and quality indicators"
+    columns:
+      - name: customer_id
+        description: "Unique customer identifier"
+        tests:
+          - not_null
+          - unique
+      
+      - name: total_orders
+        description: "Total number of orders placed by customer"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      
+      - name: total_spend
+        description: "Lifetime spend by customer"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      
+      - name: avg_order_value
+        description: "Average order value"
+        tests:
+          - not_null
+      
+      - name: days_since_last_order
+        description: "Days since customer's last order (null if no orders)"
+      
+      - name: monthly_order_frequency
+        description: "Estimated monthly order frequency"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      
+      - name: conversion_rate
+        description: "Purchase events / total sessions"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "BETWEEN 0 AND 1"
+      
+      - name: recency_days
+        description: "Days since last purchase (for RFM)"
+        tests:
+          - not_null
+      
+      - name: frequency
+        description: "Total orders (for RFM)"
+        tests:
+          - not_null
+      
+      - name: monetary_value
+        description: "Total spend (for RFM)"
+        tests:
+          - not_null
+  
+  - name: daily_metrics
+    description: "Daily aggregated business and data quality metrics"
+    columns:
+      - name: metric_date
+        description: "Date of metrics"
+        tests:
+          - not_null
+          - unique
+      
+      - name: total_orders
+        description: "Total orders for the day"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      
+      - name: total_revenue
+        description: "Total revenue for the day"
+        tests:
+          - not_null
+      
+      - name: order_amount_quality_score
+        description: "Quality score for order amounts (0-1)"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "BETWEEN 0 AND 1"
+      
+      - name: order_status_quality_score
+        description: "Quality score for order statuses (0-1)"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "BETWEEN 0 AND 1"
+      
+      - name: event_type_quality_score
+        description: "Quality score for event types (0-1)"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "BETWEEN 0 AND 1"
